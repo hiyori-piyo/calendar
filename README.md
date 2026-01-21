@@ -1,46 +1,42 @@
-# Getting Started with Create React App
+# スケジュール管理カレンダー
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+長期的なタスクを完遂するために、締め切りから逆算して「中間目標」を設定できるカレンダーアプリです。
 
-## Available Scripts
+## 開発背景
 
-In the project directory, you can run:
+コミックマーケットなどのイベントに参加する友人が多く、締め切り直前になって慌てて作業している様子をよく目にしていました。
+その中で、「本文完成」「表紙完成」だけでなく、「下書き」「ペン入れ」「仕上げ」など工程ごとに目標日を決めて管理できたら楽なのではないかと感じ、メインタスクと中間目標タスクという二つの親子関係を持つデータ構造のカレンダーを実装しました。
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 公開URL
+https://calendar-ufoj.vercel.app/
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 主な機能
+- カレンダーへのタスク登録
+- タスクに紐づく中間目標（マイルストーン）の設定
+- タスク完了・未完了の切り替え機能
+- ローカルストレージによるデータ保存
 
-### `npm test`
+## 使用技術
+- Frontend: React, TypeScript
+- Library: FullCalendar (カレンダーUI), UUID (ID生成)
+- Styling: CSS Modules
+- Infrastructure: Vercel
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 今後の実装予定
+- タスクの編集・削除機能
+- バリデーションチェック（空入力の防止など）
+- 日付の不整合チェック（中間目標が最終締切を越えないように制限）
 
-### `npm run build`
+## 学習状況
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+現在、職業訓練校にて以下の技術スタックを習得中です。
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- フロントエンド：React / TypeScript / Next.js によるSPA開発。
+- SQL（１月末に学習予定）： SQLを用いたデータ設計
+- バックエンド（２月より学習予定）: python / Flask を用いたアプリ開発
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+本アプリは学習のアウトプットとして継続的に開発しています。今後はSQL学習に合わせたDB移行、バックエンド学習に合わせたPythonによる認証基盤の実装など、習得した技術を順次統合し、システムの信頼性と利便性を高めていく計画です。
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## こだわったポイント
+- 親タスクと中間目標をUUIDで紐付け、親子関係を視覚的にわかりやすく表示するように工夫しました。
