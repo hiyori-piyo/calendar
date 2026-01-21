@@ -4,7 +4,7 @@ import { ChangeEvent } from "./event"
 
 const SelectedDatePanel=(props:{ event:ChangeEvent,allEvent:ChangeEvent[],open:boolean,onButton:(id:string)=>void,onClose:()=>void})=>{
 
-    const mile=props.event.extendedProps?.milestones
+    // const mile=props.event.extendedProps?.milestones
     const event=props.event.extendedProps
 
   if (!props.open || !event) {
