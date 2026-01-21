@@ -5,17 +5,17 @@ import { useEffect } from "react";
 
 
 
-const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>void,onClose:()=>void}) => {
+const Modal = (props: { modalstate: Event ,onSave:(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>void,onClose:()=>void}) => {
 
 //   表示中か非表示中か
-  const state = props.modelstate;
+  const state = props.modalstate;
 
 //   モーダルで中間目標追加した情報格納する配列
-  const [miletones, setMilestones] = useState<MileStones[]>([
+  const [milestones, setMilestones] = useState<MileStones[]>([
     { text: "", date: "" },
   ]);
 
-//   モーダル閉じたら空白に戻せよ
+//   モーダル閉じたら概要やタスク名も空白に戻す
   useEffect(()=>{
 
     if (state==='display') {
@@ -26,14 +26,17 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
     }
   },[state])
 
+  // 　中間目標の欄を追加する
   const addMilestones = () => {
-    setMilestones([...miletones, { text: "", date: "" }]);
+    setMilestones([...milestones, { text: "", date: "" }]);
   };
 
+  // 　中間目標の欄を削除する
   const miledelete=(index:number)=>{
 
-    setMilestones(miletones.filter((_,i)=>i !== index))
+    setMilestones(milestones.filter((_,i)=>i !== index))
   }
+
 
   const [taskTitle,setTaskTitle]=useState("")
   const [taskTime,setTaskTime]=useState("")
@@ -67,6 +70,7 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
             </div>
             </div>
 
+          {/* 色の指定 */}
             <div className="input-group">
                 <input type="color" name="" id="" 
                 value={taskColor}
@@ -95,13 +99,13 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
 
             {/* 中間目標増やす */}
                 <div className="milestone-list">
-                  {miletones.map((miletone,index) => {
+                  {milestones.map((miletone,index) => {
                     return (
                       <div className="input-row">
                         <div className="input-group text-long-l">
                           <input type="text" value={miletone.text} className="input-field" style={{ flex: 2 }}
                           onChange={(e)=>{
-                            const newmile=[...miletones]
+                            const newmile=[...milestones]
                             newmile[index]={...newmile[index],text:e.target.value}
                             setMilestones(newmile);
                           }}/>
@@ -109,7 +113,7 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
                         <div className="input-group date-short">
                           <input type="date" name="" id="" value={miletone.date} className="input-field" style={{ flex: 1.5 }}
                           onChange={(e)=>{
-                            const newmile=[...miletones]
+                            const newmile=[...milestones]
                             newmile[index]={...newmile[index],date:e.target.value}
                             setMilestones(newmile);
                             
@@ -126,8 +130,10 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
               </div>
 
 
+            {/* イベント追加ボタン */}
+            <button className="btn btn-primary" onClick={()=>props.onSave(taskTitle,taskTime,milestones,taskColor,taskDetail)}　disabled={!taskTitle.trim()}>イベントを追加</button>
 
-            <button className="btn btn-primary" onClick={()=>props.onSave(taskTitle,taskTime,miletones,taskColor,taskDetail)}>イベントを追加</button>
+            {/* キャンセルボタン */}
             <button onClick={() => props.onClose()} className="btn btn-secondary">キャンセル</button>
       </div>
       </div>
@@ -138,4 +144,4 @@ const Model = (props: { modelstate: Event ,onSave:(taskTitle:string,taskTime:str
   }
 };
 
-export default Model;
+export default Modal;

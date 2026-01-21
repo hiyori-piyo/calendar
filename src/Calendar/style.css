@@ -1,3 +1,6 @@
+/* cssはAIを使用して設計しています */
+
+
 /* style.css に追加 */
 .calendar-container {
   width: 95%;
@@ -101,6 +104,13 @@
   flex: 1;
   margin-right: 10px;
   margin-top: 15px;;
+}
+
+/* 無効化されているボタン */
+.btn-primary:disabled {
+  background-color: #ccc; 
+  cursor: not-allowed;    
+  opacity: 0.7;           
 }
 
 .btn-secondary {

@@ -16,7 +16,7 @@ import SelectedDatePanel from "./SelectedDatePanel";
 // カレンダー本体
 const MyCalendar: React.FC = () => {
   const [addEvent, setAddEvent] = useState<Event>("hidden");
-  const [changeEvent,setChangeevet]=useState<ChangeEvent[]>(()=>{
+  const [changeEvent,setChangeEvent]=useState<ChangeEvent[]>(()=>{
 
 // ローカルストレージ
     const saved=localStorage.getItem("events");
@@ -29,7 +29,7 @@ const MyCalendar: React.FC = () => {
   const [selectEvent,setSelectevent]=useState<ChangeEvent>({id:"",title:"",start:"",color:""})
   const [detailOpen,setDetailopen]=useState(false)
 
-//   日付クリックしたらモーダル出して日付取得
+//   日付クリックしたら日付取得してモーダル出す
   const handleClick = (info:any) => {
     setAddEvent("display");
     setSelectdate(info.dateStr)
@@ -52,6 +52,7 @@ const MyCalendar: React.FC = () => {
     setDetailopen(true)
   }
 
+  // 詳細ウィンドウ閉じる処理
   const onclose=()=>{
     setDetailopen(false)
   }
@@ -88,12 +89,9 @@ const MyCalendar: React.FC = () => {
         }
     })
 
-// 色の受取
 
-
-
-    
-    setChangeevet([...changeEvent,{
+    // 入力されたイベントを追加
+    setChangeEvent([...changeEvent,{
         id:mainID,
         title:taskTitle,
         start:deadline,
@@ -110,21 +108,20 @@ const MyCalendar: React.FC = () => {
    
   }
 
-//   モーダル閉めるときの処理
+//   モーダルでキャンセル押されたときの処理
   const close=()=>{
 
     setAddEvent("hidden")
   }
 
-//   モーダルで追加した情報の中身変わると再描画
+//   新しいイベントが来るとローカルストレージを最新の状態に同期
   useEffect(()=>{
 
     localStorage.setItem("events",JSON.stringify(changeEvent))
   },[changeEvent])
 
-
+// 達成済みボタンを押したときの処理
   const onToggleComplete=(id:string)=>{
-
 
     const updateEvent=changeEvent.map((m)=>{
 
@@ -137,7 +134,7 @@ const MyCalendar: React.FC = () => {
         return m
       }
     })
-    setChangeevet(updateEvent)
+    setChangeEvent(updateEvent)
   }
 
   return (
@@ -150,28 +147,23 @@ const MyCalendar: React.FC = () => {
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]} // プラグインを読み込む
         initialView="dayGridMonth" // カレンダーが読み込まれたときの初期ビュー
         slotDuration="00:30:00" // タイムスロットを表示する頻度。
-        //ユーザーはクリックしてドラッグすることで、複数の日付または時間帯を強調表示できます。
-        //ユーザーがクリックやドラッグで選択できるようにするには、インタラクション・プラグインをロードし、このオプションをtrueに設定する必要があります。
-        selectable={true}
         businessHours={{
           daysOfWeek: [1, 2, 3, 4, 5],
           startTime: "00:00",
           endTime: "24:00",
-        }} // カレンダーの特定の時間帯を強調します。 デフォルトでは、月曜日から金曜日の午前9時から午後5時までです。
+        }} // カレンダーの特定の時間帯を強調。 デフォルトでは、月曜日から金曜日の午前9時から午後5時まで
         weekends={true} // カレンダービューに土曜日/日曜日の列を含めるかどうか。
         headerToolbar={{
           start: "title",
           center: "prev,next,today",
           end: "dayGridMonth,timeGridWeek",
         }} // headerToolbarのタイトルに表示されるテキストを決定します。
-        // ref={ref}
         events={changeEvent}
-        dateClick={handleClick} //ユーザーがイベントをクリックしたときにトリガーされます。
+        dateClick={handleClick} //ユーザーがイベントをクリックしたときにトリガーされる。
         eventClick={handleEventClick}
 
-        // select={handleSelect}//日時が選択されるとトリガーされる
       />
-      <Model modelstate={addEvent} onSave={receive}  onClose={close}/>
+      <Model modalstate={addEvent} onSave={receive}  onClose={close}/>
       <SelectedDatePanel event={selectEvent} allEvent={changeEvent} open={detailOpen} onButton={onToggleComplete} onClose={onclose}/>
     
     </div>
