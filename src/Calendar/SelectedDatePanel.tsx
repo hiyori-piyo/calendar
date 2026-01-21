@@ -72,15 +72,15 @@ const SelectedDatePanel=(props:{ event:ChangeEvent,allEvent:ChangeEvent[],open:b
 
                             {/* 完了済みになってたら完了しましたと出す */}
                             <span>{m.extendedProps?.isComplete ? "完了しました":""}</span> <br />
-                            <input type="button" value="閉じる" className="btn-close" onClick={()=>props.onClose()}/>
                           </div>
                           
                         )})
-                    ) : (<p></p>
-                    )}
+                      ) : (<p></p>
+                      )}
                     
                     
                  
+                      <input type="button" value="閉じる" className="btn-close" onClick={()=>props.onClose()}/>
                 </div>
     
 
