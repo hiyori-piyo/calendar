@@ -1,0 +1,240 @@
+/* style.css に追加 */
+.calendar-container {
+  width: 95%;
+  margin: 40px auto;
+  min-width: 800px; /* 極端に痩せないように最小幅を担保 */
+  display:block
+}
+
+/* モーダルの背景（画面全体） */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: sans-serif;
+}
+
+/* モーダル本体 */
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: #333;
+}
+
+.modal-title {
+  margin-top: 0;
+  color: #3788d8;
+  font-size: 1.5rem;
+}
+.input-row {
+  display: flex;
+  gap: 15px; /* 概要と時間の間の隙間 */
+  margin-top: 10px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column; /* ラベルと入力を縦に並べる */
+  flex: 1; /* 幅を均等に広げる */
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 0px;
+}
+
+/* 入力フォーム共通 */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* 目標リストのスクロールエリア */
+.milestone-list {
+  max-height: 150px;
+  overflow-y: auto;
+  margin: 10px 0;
+  padding-right: 5px;
+}
+
+.milestone-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* ボタンの共通設定 */
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background-color: #3788d8;
+  color: white;
+  flex: 1;
+  margin-right: 10px;
+  margin-top: 15px;;
+}
+
+.btn-secondary {
+  background-color: #eee;
+  color: #333;
+  flex: 1;
+}
+
+.btn-add {
+  background-color: #666;
+  color: white;
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* テキストを長く */
+.text-long {
+  flex: 3;
+}
+
+/* 日付を小さく */
+.text-long-l {
+  flex: 3;
+}
+
+.date-short {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* ゴミ箱ボタン */
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 2px;
+  padding-top: 16px;
+  color: #888;
+}
+
+.btn-delete:hover {
+  color: #e74c3c;
+}
+
+/* =========================
+   詳細パネル（カレンダー下）
+========================= */
+
+.detail-panel {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+
+  transition:
+    max-height 0.35s ease,
+    padding 0.25s ease,
+    transform 0.35s ease,
+    opacity 0.25s ease;
+
+  transform: translateY(20px);
+  opacity: 0;
+
+  z-index: 10;
+}
+
+/* open状態 */
+.detail-panel.open {
+  max-height: 300px;
+  padding: 16px 20px;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 中身 */
+.detail-panel > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* タイトル */
+.detail-panel span:first-child {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 詳細テキスト */
+.detail-panel span,
+.detail-panel p {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 中間目標 */
+.detail-panel p {
+  margin-top: 10px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+/* 中間目標リスト */
+.detail-panel div div {
+  font-size: 13px;
+  padding: 4px 0;
+  color: #555;
+}
+
+/* 完了ラジオ */
+.detail-panel input[type="radio"] {
+  margin-top: 6px;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+/* =========================
+   カレンダー下余白
+========================= */
+
+.calendar-container {
+  padding-bottom: 120px; /* パネル分の余白 */
+}
+
+
