@@ -11,6 +11,8 @@
 ## 公開URL
 https://calendar-ufoj.vercel.app/
 
+![alt text](image.png)
+
 ## 主な機能
 - カレンダーへのタスク登録
 - タスクに紐づく中間目標（マイルストーン）の設定
