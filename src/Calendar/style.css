@@ -189,6 +189,28 @@
   z-index: 10;
 }
 
+/* 詳細パネル内の閉じるボタンを強制的に小さくする */
+.detail-panel .btn-close {
+  margin-right: auto;          /* ← 左に寄せる決定打 */
+  width: fit-content;          /* 横に伸びない */
+  padding: 6px 14px;
+  margin-top: 8px;
+
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.detail-panel .btn-close:hover {
+  background-color: #e2e6ea;
+}
+
 /* open状態 */
 .detail-panel.open {
   max-height: 300px;

@@ -30,7 +30,7 @@ const SelectedDatePanel=(props:{ event:ChangeEvent,allEvent:ChangeEvent[],open:b
                 <span>達成した<input type="radio" name="" id="" onClick={()=>props.onButton(props.event.id)}/></span> 
                 
                 
-                <input type="button" value="閉じる" onClick={()=>props.onClose()}/>
+                <input type="button" value="閉じる" className="btn-close" onClick={()=>props.onClose()}/>
 
             </div>
 
@@ -47,7 +47,7 @@ const SelectedDatePanel=(props:{ event:ChangeEvent,allEvent:ChangeEvent[],open:b
 
             <div>
                 <span>タスク：{props.event.title}</span> <br />
-                <span>詳細：{props.event.extendedProps?.detail}</span> <br />
+                <span>詳細：{props.event.extendedProps?.detail ? props.event.extendedProps?.detail : "なし"}</span> <br />
                 
                 <p>中間目標</p>
                 <div>
@@ -69,10 +69,12 @@ const SelectedDatePanel=(props:{ event:ChangeEvent,allEvent:ChangeEvent[],open:b
                             }}>
                           
                             <span>{m.title}：{dateString.toString()}まで　</span>
-                            
+
                             {/* 完了済みになってたら完了しましたと出す */}
-                            <span>{m.extendedProps?.isComplete ? "完了しました":""}</span>
+                            <span>{m.extendedProps?.isComplete ? "完了しました":""}</span> <br />
+                            <input type="button" value="閉じる" className="btn-close" onClick={()=>props.onClose()}/>
                           </div>
+                          
                         )})
                     ) : (<p></p>
                     )}
