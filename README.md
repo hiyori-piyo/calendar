@@ -20,23 +20,25 @@ https://calendar-ufoj.vercel.app/
 - ローカルストレージによるデータ保存
 
 ## 使用技術
-- Frontend: React, TypeScript
+- Frontend: React(ver.19.2.3), TypeScript(ver.4.9.5)
 - Library: FullCalendar (カレンダーUI), UUID (ID生成)
 - Styling: CSS Modules
 - Infrastructure: Vercel
 
 ## 今後の実装予定
 - タスクの編集・削除機能
-- バリデーションチェック（空入力の防止など）
+- バリデーションチェック
 - 日付の不整合チェック（中間目標が最終締切を越えないように制限）
 
 ## 学習状況
 
 現在、職業訓練校にて以下の技術スタックを習得中です。
 
-- フロントエンド：React / TypeScript / Next.js によるSPA開発。
-- SQL（１月末に学習予定）： SQLを用いたデータ設計
+- フロントエンド：JavaScript / TypeScript / React / Next.js によるSPA開発。
+- SQL（１月末に学習予定）： MariaDBを用いたデータ設計
 - バックエンド（２月より学習予定）: python / Flask を用いたアプリ開発
+- インフラ（３月末より学習予定）：AWS / Linuxを用いたインフラ構築
+- ４月末卒業
 
 本アプリは学習のアウトプットとして継続的に開発しています。今後はSQL学習に合わせたDB移行、バックエンド学習に合わせたPythonによる認証基盤の実装など、習得した技術を順次統合し、システムの信頼性と利便性を高めていく計画です。
 
