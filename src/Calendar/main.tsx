@@ -10,23 +10,39 @@ import { Event } from "./event";
 import { MileStones } from "./event";
 import Model from "./Modal";
 import SelectedDatePanel from "./SelectedDatePanel";
+import { supabase } from "./supabaseClient";
+import { allEvents } from "./calendarSQL";
 
 
 
 // カレンダー本体
 const MyCalendar: React.FC = () => {
   const [addEvent, setAddEvent] = useState<Event>("hidden");
-  const [changeEvent,setChangeEvent]=useState<ChangeEvent[]>(()=>{
+  const [changeEvent,setChangeEvent]=useState<ChangeEvent[]>([])
+    
+    
+// useStateは非同期処理使えないのでuseEffectで代用
+  useEffect(()=>{
 
-// ローカルストレージ
-    const saved=localStorage.getItem("events");
-    return saved ? JSON.parse(saved):[];
-  })
 
-//   クリックしたときの日付
+    const saved= async ()=>{
+
+      try {
+      const data=await allEvents()
+      setChangeEvent(data)
+        
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    saved()
+  },[])
+
+//   空イベントをクリックしたときの日付
   const [selectDate,setSelectdate]=useState("")
-//   クリックしたときのイベント
-  const [selectEvent,setSelectevent]=useState<ChangeEvent>({id:"",title:"",start:"",color:""})
+//   既存イベントをクリックしたときのイベント
+  const [selectEvent,setSelectevent]=useState<string>("")
   const [detailOpen,setDetailopen]=useState(false)
 
 //   日付クリックしたら日付取得してモーダル出す
@@ -34,21 +50,22 @@ const MyCalendar: React.FC = () => {
     setAddEvent("display");
     setSelectdate(info.dateStr)
   };
-//   日付クリックしたら詳細ウィンドウ出す
+//   イベントクリックしたら詳細ウィンドウ出す
   const handleEventClick=(info:any)=>{
-    const eventData:ChangeEvent={
-      id:info.event.id,
-        title: info.event.title,
-        start: info.event.startStr,
-        color: info.event.backgroundColor || info.event.borderColor,
-        extendedProps:{
-        detail:info.event.extendedProps?.detail,
-        milestones:info.event.extendedProps?.milestones,
-        type:info.event.extendedProps.type,
-        isComplete:info.event.extendedProps.isComplete
-        }
-    }
-    setSelectevent(eventData)
+    // const eventData:ChangeEvent={
+    //   id:info.event.id,
+    //     title: info.event.title,
+    //     start: info.event.startStr,
+    //     color: info.event.backgroundColor || info.event.borderColor,
+    //     extendedProps:{
+    //     detail:info.event.extendedProps?.detail,
+    //     milestones:info.event.extendedProps?.milestones,
+    //     type:info.event.extendedProps.type,
+    //     isComplete:info.event.extendedProps.isComplete
+    //     }
+    // }
+    console.log("クリックされたID:", info.event.id)
+    setSelectevent(info.event.id)
     setDetailopen(true)
   }
 
@@ -58,7 +75,11 @@ const MyCalendar: React.FC = () => {
   }
 
 //   モーダルからの受取
-  const receive=(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>{
+  const receive=async(taskTitle:string,
+    taskTime:string,
+    milestone:MileStones[],
+    taskColor:string,
+    taskDetail:string)=>{
 
     const mainID=crypto.randomUUID()
 
@@ -68,6 +89,21 @@ const MyCalendar: React.FC = () => {
         deadline=`${selectDate}T${taskTime}:00`;
     } else {
         deadline=selectDate
+    }
+
+    const mainTask:ChangeEvent={
+        id:mainID,
+        title:taskTitle,
+        start:deadline,
+        display: 'list-item',
+        color:taskColor,
+        extendedProps:{
+            detail:taskDetail,
+            milestones:milestone,
+            type:"main",
+            isComplete:false
+        }
+
     }
 
 // 中間目標のタスク
@@ -89,25 +125,44 @@ const MyCalendar: React.FC = () => {
         }
     })
 
+    const allEvent=[mainTask,...mileTask]
+
+try{
+
+    const { error } = await supabase
+            .from('events') // 作成したテーブル名
+            .insert(allEvent.map(e =>({
+
+              id:e.id,
+              title:e.title,
+              start:e.start,
+
+              display:e.display,
+              color:e.color,
+
+              text_color:e.textColor,
+              background_color:e.backgroundColor,
+
+              type:e.extendedProps?.type,
+              is_complete:e.extendedProps?.isComplete,
+              detail:e.extendedProps?.detail,
+
+              parent_id:e.extendedProps?.parentID,
+            })));
+
+        if (error) throw error;
+
 
     // 入力されたイベントを追加
-    setChangeEvent([...changeEvent,{
-        id:mainID,
-        title:taskTitle,
-        start:deadline,
-        display: 'list-item',
-        color:taskColor,
-        extendedProps:{
-            detail:taskDetail,
-            milestones:milestone,
-            type:"main",
-            isComplete:false
-        }
-    },...mileTask])
+    setChangeEvent([...changeEvent,...allEvent])
     setAddEvent("hidden");
    
-  }
+  } catch(error){
 
+    console.error("保存失敗:", error);
+    alert("データベースへの保存に失敗しました。");
+  }
+    }
 //   モーダルでキャンセル押されたときの処理
   const close=()=>{
 
@@ -164,7 +219,7 @@ const MyCalendar: React.FC = () => {
 
       />
       <Model modalstate={addEvent} onSave={receive}  onClose={close}/>
-      <SelectedDatePanel event={selectEvent} allEvent={changeEvent} open={detailOpen} onButton={onToggleComplete} onClose={onclose}/>
+      <SelectedDatePanel ID={selectEvent} allEvent={changeEvent} open={detailOpen} onButton={onToggleComplete} onClose={onclose}/>
     
     </div>
   );
