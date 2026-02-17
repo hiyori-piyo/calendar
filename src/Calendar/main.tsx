@@ -12,6 +12,7 @@ import Model from "./Modal";
 import SelectedDatePanel from "./SelectedDatePanel";
 import { supabase } from "./supabaseClient";
 import { allEvents } from "./calendarSQL";
+import Modal from "./Modal";
 
 
 
@@ -218,7 +219,7 @@ try{
         eventClick={handleEventClick}
 
       />
-      <Model modalstate={addEvent} onSave={receive}  onClose={close}/>
+      <Modal modalstate={addEvent} onSave={receive}  onClose={close}/>
       <SelectedDatePanel ID={selectEvent} allEvent={changeEvent} open={detailOpen} onButton={onToggleComplete} onClose={onclose}/>
     
     </div>

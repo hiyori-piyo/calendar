@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 
 
-const Modal = (props: { modalstate: Event ,onSave:(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>void,onClose:()=>void}) => {
+const Modal = (props: { modalstate: string ,onSave:(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>void,onClose:()=>void}) => {
 
 //   表示中か非表示中か
   const state = props.modalstate;

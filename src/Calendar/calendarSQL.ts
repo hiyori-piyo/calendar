@@ -1,90 +1,111 @@
 import { supabase } from "./supabaseClient";
 import { ChangeEvent } from "./event";
 
-
 // export const EventSQL ={
 
-    export const allEvents=async ()=>{
+export const allEvents = async () => {
+  const { data, error } = await supabase.from("events").select("*");
+  if (error) throw error;
 
+  return data.map((e) => ({
+    id: e.id,
+    title: e.title,
+    start: e.start,
 
-    const {data,error}=await supabase .from('events') .select("*");
-    if(error)throw error;
+    display: e.display,
+    color: e.color,
 
-    return data.map(e =>({
+    text_color: e.textColor,
+    background_color: e.backgroundColor,
 
-            id:e.id,
-            title:e.title,
-            start:e.start,
+    type: e.extendedProps?.type,
+    isComplete: e.is_complete,
+    detail: e.extendedProps?.detail,
 
-            display:e.display,
-            color:e.color,
+    parent_id: e.extendedProps?.parentID,
+  }));
+};
 
-            text_color:e.textColor,
-            background_color:e.backgroundColor,
+export const searchMainEvent = async (id: string) => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-            type:e.extendedProps?.type,
-            is_complete:e.extendedProps?.isComplete,
-            detail:e.extendedProps?.detail,
+  if (error) throw error;
 
-            parent_id:e.extendedProps?.parentID,
+  return {
+    id: data.id,
+    title: data.title,
+    start: data.start,
 
-    }))
-}
+    display: data.display,
+    color: data.color,
 
-    export const searchMainEvent=async (id:string)=>{
+    text_color: data.textColor,
+    background_color: data.backgroundColor,
 
-    
-        const {data,error}=await supabase .from('events') .select("*") .eq("id" ,id).single()
+    type: data.extendedProps?.type,
+    isComplete: data.is_complete,
+    detail: data.extendedProps?.detail,
 
-        if (error) throw error
+    parent_id: data.extendedProps?.parentID,
+  };
+};
 
-        return {
+export const searchChildEvent = async (id: string) => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("parent_id", id);
+  if (error) throw error;
 
-            id:data.id,
-            title:data.title,
-            start:data.start,
+  return data.map((e) => ({
+    id: e.id,
+    title: e.title,
+    start: e.start,
 
-            display:data.display,
-            color:data.color,
+    display: e.display,
+    color: e.color,
 
-            text_color:data.textColor,
-            background_color:data.backgroundColor,
+    text_color: e.textColor,
+    background_color: e.backgroundColor,
 
-            type:data.extendedProps?.type,
-            is_complete:data.extendedProps?.isComplete,
-            detail:data.extendedProps?.detail,
+    type: e.extendedProps?.type,
+    isComplete: e.is_complete,
+    detail: e.extendedProps?.detail,
 
-            parent_id:data.extendedProps?.parentID,
+    parent_id: e.extendedProps?.parentID,
+  }));
+};
 
-    }
-    }
+export const onToggleComplete = async (id: string, currentState: boolean) => {
+  const { data, error } = await supabase
+    .from("events")
+    .update({ is_complete: !currentState })
+    .eq("id", id)
+    .select()
+    .single();
 
-    export const searchChildEvent=async(id:string)=>{
+  console.log(data.id);
+  if (error) throw error;
 
-        const {data,error}=await supabase .from('events') .select("*") .eq("parent_id",id)
-        if (error) throw error
+  return {
+    id: data.id,
+    title: data.title,
+    start: data.start,
 
-        return data.map(e =>({
+    display: data.display,
+    color: data.color,
 
-            id:e.id,
-            title:e.title,
-            start:e.start,
+    text_color: data.textColor,
+    background_color: data.backgroundColor,
 
-            display:e.display,
-            color:e.color,
+    type: data.extendedProps?.type,
+    isComplete: data.is_complete,
+    detail: data.extendedProps?.detail,
 
-            text_color:e.textColor,
-            background_color:e.backgroundColor,
-
-            type:e.extendedProps?.type,
-            is_complete:e.extendedProps?.isComplete,
-            detail:e.extendedProps?.detail,
-
-            parent_id:e.extendedProps?.parentID,
-
-    }))
-    }
-
-
-
-
+    parent_id: data.extendedProps?.parentID,
+  };
+};
