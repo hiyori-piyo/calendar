@@ -2,13 +2,16 @@ import { MileStones } from "./event";
 import { useState } from "react";
 import { Event } from "./event";
 import { useEffect } from "react";
+import { ChangeEvent } from "./event";
+import { supabase } from "./supabaseClient";
+import './style.css'
 
-
-
-const Modal = (props: { modalstate: string ,onSave:(taskTitle:string,taskTime:string,milestone:MileStones[],taskColor:string,taskDetail:string)=>void,onClose:()=>void}) => {
+const Modal = (props: { modalstate: string ,onSave:(newEvent:ChangeEvent[])=>void,onClose:()=>void ,selectDate:string}) => {
 
 //   表示中か非表示中か
   const state = props.modalstate;
+  const selectDate=props.selectDate
+
 
 //   モーダルで中間目標追加した情報格納する配列
   const [milestones, setMilestones] = useState<MileStones[]>([
@@ -36,6 +39,96 @@ const Modal = (props: { modalstate: string ,onSave:(taskTitle:string,taskTime:st
 
     setMilestones(milestones.filter((_,i)=>i !== index))
   }
+
+
+  //   モーダルからの受取
+  const insert=async(taskTitle:string,
+    taskTime:string,
+    milestone:MileStones[],
+    taskColor:string,
+    taskDetail:string)=>{
+
+    const mainID=crypto.randomUUID()
+
+// メインのタスク
+    let deadline:string
+    if (taskTime) {
+        deadline=`${selectDate}T${taskTime}:00`;
+    } else {
+        deadline=selectDate
+    }
+
+    const mainTask:ChangeEvent={
+        id:mainID,
+        title:taskTitle,
+        start:deadline,
+        display: 'list-item',
+        color:taskColor,
+        extendedProps:{
+            detail:taskDetail,
+            milestones:milestone,
+            type:"main",
+            isComplete:false
+        }
+
+    }
+
+// 中間目標のタスク
+    const mileTask:ChangeEvent[]=milestone.map((m)=>{
+        return{
+        id:crypto.randomUUID(),
+        title:m.text,
+        start:m.date,
+        textColor: "#006064",
+        backgroundColor:`${taskColor}33`,
+        extendedProps:{
+            type:"mile",
+            isComplete:false,
+            parentID:mainID
+        }
+        
+        
+
+        }
+    })
+
+    const allEvent=[mainTask,...mileTask]
+
+try{
+
+    const { error } = await supabase
+            .from('events') // 作成したテーブル名
+            .insert(allEvent.map(e =>({
+
+              id:e.id,
+              title:e.title,
+              start:e.start,
+
+              display:e.display,
+              color:e.color,
+
+              text_color:e.textColor,
+              background_color:e.backgroundColor,
+
+              type:e.extendedProps?.type,
+              is_complete:e.extendedProps?.isComplete,
+              detail:e.extendedProps?.detail,
+
+              parent_id:e.extendedProps?.parentID,
+            })));
+
+        if (error) throw error;
+
+
+    // 入力されたイベントを追加
+    props.onSave(allEvent)
+   
+  } catch(error){
+
+    console.error("保存失敗:", error);
+    alert("データベースへの保存に失敗しました。");
+  }
+    }
 
 
   const [taskTitle,setTaskTitle]=useState("")
@@ -131,7 +224,7 @@ const Modal = (props: { modalstate: string ,onSave:(taskTitle:string,taskTime:st
 
 
             {/* イベント追加ボタン */}
-            <button className="btn btn-primary" onClick={()=>props.onSave(taskTitle,taskTime,milestones,taskColor,taskDetail)}　disabled={!taskTitle.trim()}>イベントを追加</button>
+            <button className="btn btn-primary" onClick={()=>insert(taskTitle,taskTime,milestones,taskColor,taskDetail)}　disabled={!taskTitle.trim()}>イベントを追加</button>
 
             {/* キャンセルボタン */}
             <button onClick={() => props.onClose()} className="btn btn-secondary">キャンセル</button>
