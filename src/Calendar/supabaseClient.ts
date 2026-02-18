@@ -1,6 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = 'https://obmakkjffwjkmiyldyvy.supabase.co'
-const supabaseKey = 'sb_publishable_uCR9exQz1jQ_qmIhkckXZQ_9Nd_FBq3'
+// 直接文字列を書くのではなく、環境変数を参照するように変更
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.log("URL:", supabaseUrl); // これが undefined なら読み込めていない
+  console.log("KEY:", supabaseAnonKey);
+  throw new Error("Missing Supabase Environment Variables");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
