@@ -7,12 +7,9 @@ import { useEffect, useState } from "react";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import { ChangeEvent } from "./event";
 import { Event } from "./event";
-import { MileStones } from "./event";
-import Model from "./Modal";
-import SelectedDatePanel from "./SelectedDatePanel";
-import { supabase } from "./supabaseClient";
-import { allEvents } from "./calendarSQL";
 import Modal from "./Modal";
+import SelectedDatePanel from "./SelectedDatePanel";
+import { allEvents } from "./calendarSQL";
 
 // カレンダー本体
 const MyCalendar: React.FC = () => {
@@ -20,17 +17,17 @@ const MyCalendar: React.FC = () => {
   const [changeEvent, setChangeEvent] = useState<ChangeEvent[]>([]);
 
   // useStateは非同期処理使えないのでuseEffectで代用
-  useEffect(() => {
-    const saved = async () => {
-      try {
-        const data = await allEvents();
-        setChangeEvent(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchEvents = async () => {
+    try {
+      const data = await allEvents();
+      setChangeEvent(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    saved();
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
   //   空イベントをクリックしたときの日付
@@ -51,8 +48,24 @@ const MyCalendar: React.FC = () => {
     setDetailopen(true);
   };
 
+  const [editMainData, setEditMainData] = useState<any>(null);
+  const [editChildData, setEditChildData] = useState<any[]>([]);
+  const [editModal, setEditModal] = useState("hidden");
+
+  const onedit = (mainData: any, childData: any[]) => {
+    setEditMainData(mainData);
+    setEditChildData(childData);
+    setEditModal("display");
+  };
+
   // 詳細ウィンドウ閉じる処理
   const onclose = () => {
+    setDetailopen(false);
+  };
+
+  // イベント削除処理
+  const ondelete = (id: string) => {
+    setChangeEvent(changeEvent.filter((e) => e.id !== id && e.extendedProps?.parentID !== id));
     setDetailopen(false);
   };
 
@@ -122,11 +135,20 @@ const MyCalendar: React.FC = () => {
         onClose={close}
         selectDate={selectDate}
       />
+      <Modal
+        modalstate={editModal}
+        onClose={() => setEditModal("hidden")}
+        onSave={(_: ChangeEvent[]) => { fetchEvents(); setEditModal("hidden"); }}
+        mainData={editMainData}
+        childData={editChildData}
+      />
       <SelectedDatePanel
         ID={selectEvent}
         allEvent={changeEvent}
         open={detailOpen}
+        onEdit={onedit}
         onButton={onToggleComplete}
+        onDelete={ondelete}
         onClose={onclose}
       />
     </div>

@@ -15,14 +15,15 @@ export const allEvents = async () => {
     display: e.display,
     color: e.color,
 
-    text_color: e.textColor,
-    background_color: e.backgroundColor,
+    textColor: e.text_color,
+    backgroundColor: e.background_color,
 
-    type: e.extendedProps?.type,
-    isComplete: e.is_complete,
-    detail: e.extendedProps?.detail,
-
-    parent_id: e.extendedProps?.parentID,
+    extendedProps: {
+      type: e.type,
+      isComplete: e.is_complete,
+      detail: e.detail,
+      parentID: e.parent_id,
+    },
   }));
 };
 
@@ -43,14 +44,14 @@ export const searchMainEvent = async (id: string) => {
     display: data.display,
     color: data.color,
 
-    text_color: data.textColor,
-    background_color: data.backgroundColor,
+    textColor: data.text_color,
+    backgroundColor: data.background_color,
 
-    type: data.extendedProps?.type,
+    type: data.type,
     isComplete: data.is_complete,
-    detail: data.extendedProps?.detail,
+    detail: data.detail,
 
-    parent_id: data.extendedProps?.parentID,
+    parent_id: data.parent_id,
   };
 };
 
@@ -69,15 +70,29 @@ export const searchChildEvent = async (id: string) => {
     display: e.display,
     color: e.color,
 
-    text_color: e.textColor,
-    background_color: e.backgroundColor,
+    textColor: e.text_color,
+    backgroundColor: e.background_color,
 
-    type: e.extendedProps?.type,
+    type: e.type,
     isComplete: e.is_complete,
-    detail: e.extendedProps?.detail,
+    detail: e.detail,
 
-    parent_id: e.extendedProps?.parentID,
+    parent_id: e.parent_id,
   }));
+};
+
+export const deleteEvent = async (id: string) => {
+  const { error: childError } = await supabase
+    .from("events")
+    .delete()
+    .eq("parent_id", id);
+  if (childError) throw childError;
+
+  const { error: mainError } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", id);
+  if (mainError) throw mainError;
 };
 
 export const onToggleComplete = async (id: string, currentState: boolean) => {
@@ -99,13 +114,13 @@ export const onToggleComplete = async (id: string, currentState: boolean) => {
     display: data.display,
     color: data.color,
 
-    text_color: data.textColor,
-    background_color: data.backgroundColor,
+    textColor: data.text_color,
+    backgroundColor: data.background_color,
 
-    type: data.extendedProps?.type,
+    type: data.type,
     isComplete: data.is_complete,
-    detail: data.extendedProps?.detail,
+    detail: data.detail,
 
-    parent_id: data.extendedProps?.parentID,
+    parent_id: data.parent_id,
   };
 };
