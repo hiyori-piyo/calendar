@@ -12,7 +12,7 @@
 localstorage版
 https://calendar-ufoj.vercel.app/
 
-SQL版
+SQL版（2/19追加）
 https://calendar-h5pkwwxu4-hiyoris-projects-e9eb6cc7.vercel.app/
 
 ![alt text](image.png)
