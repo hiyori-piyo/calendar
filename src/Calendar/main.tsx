@@ -81,10 +81,6 @@ const MyCalendar: React.FC = () => {
     setAddEvent("hidden");
   };
 
-  //   新しいイベントが来るとローカルストレージを最新の状態に同期
-  useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(changeEvent));
-  }, [changeEvent]);
 
   // 達成済みボタンを押したときの処理
   const onToggleComplete = (id: string) => {

@@ -34,7 +34,6 @@ const SelectedDatePanel = (props: {
 
   useEffect(() => {
     if (!props.open || !ID) {
-      console.log(ID);
 
       return setData("");
     }
@@ -45,7 +44,6 @@ const SelectedDatePanel = (props: {
   if (!props.open || !ID || !mainData) {
     return null; // データが届くか、パネルが開くまではここで止める
   }
-  console.log("中間タスクの時");
 
   const onToggleCompleted = async (id: string) => {
     const Complete = await onToggleComplete(id, mainData.isComplete);

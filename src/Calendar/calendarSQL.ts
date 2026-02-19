@@ -103,7 +103,6 @@ export const onToggleComplete = async (id: string, currentState: boolean) => {
     .select()
     .single();
 
-  console.log(data.id);
   if (error) throw error;
 
   return {

@@ -64,7 +64,7 @@ const Modal = (props: {
     setMilestones(milestones.filter((_, i) => i !== index));
   };
 
-  //   モーダルからの受取
+  //   保存ボタンが押されたときの処理
   const insert = async (
     taskTitle: string,
     taskTime: string,
