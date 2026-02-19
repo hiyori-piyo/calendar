@@ -95,6 +95,70 @@ export const deleteEvent = async (id: string) => {
   if (mainError) throw mainError;
 };
 
+export const insertEvents = async (events: ChangeEvent[]) => {
+  const { error } = await supabase.from("events").insert(
+    events.map((e) => ({
+      id: e.id,
+      title: e.title,
+      start: e.start,
+
+      display: e.display,
+      color: e.color,
+
+      text_color: e.textColor,
+      background_color: e.backgroundColor,
+
+      type: e.extendedProps?.type,
+      is_complete: e.extendedProps?.isComplete,
+      detail: e.extendedProps?.detail,
+
+      parent_id: e.extendedProps?.parentID,
+    }))
+  );
+
+  if (error) throw error;
+};
+
+export const updateMainEvent = async (
+  id: string,
+  fields: { title: string; start: string; color: string; detail: string }
+) => {
+  const { error } = await supabase
+    .from("events")
+    .update(fields)
+    .eq("id", id);
+
+  if (error) throw error;
+};
+
+export const deleteChildEvents = async (parentId: string) => {
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("parent_id", parentId);
+
+  if (error) throw error;
+};
+
+export const insertChildEvents = async (
+  mileTasks: {
+    id: string;
+    title: string;
+    start: string;
+    text_color: string;
+    background_color: string;
+    type: string;
+    is_complete: boolean;
+    parent_id: string;
+  }[]
+) => {
+  if (mileTasks.length === 0) return;
+
+  const { error } = await supabase.from("events").insert(mileTasks);
+
+  if (error) throw error;
+};
+
 export const onToggleComplete = async (id: string, currentState: boolean) => {
   const { data, error } = await supabase
     .from("events")

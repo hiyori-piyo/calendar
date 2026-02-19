@@ -3,7 +3,12 @@ import { useState } from "react";
 import { Event } from "./event";
 import { useEffect } from "react";
 import { ChangeEvent } from "./event";
-import { supabase } from "./supabaseClient";
+import {
+  insertEvents,
+  updateMainEvent,
+  deleteChildEvents,
+  insertChildEvents,
+} from "./calendarSQL";
 import "./style.css";
 
 const Modal = (props: {
@@ -115,33 +120,11 @@ const Modal = (props: {
     const allEvent = [mainTask, ...mileTask];
 
     try {
-      const { error } = await supabase
-        .from("events") // 作成したテーブル名
-        .insert(
-          allEvent.map((e) => ({
-            id: e.id,
-            title: e.title,
-            start: e.start,
-
-            display: e.display,
-            color: e.color,
-
-            text_color: e.textColor,
-            background_color: e.backgroundColor,
-
-            type: e.extendedProps?.type,
-            is_complete: e.extendedProps?.isComplete,
-            detail: e.extendedProps?.detail,
-
-            parent_id: e.extendedProps?.parentID,
-          }))
-        );
-
-      if (error) throw error;
+      await insertEvents(allEvent);
 
       // 入力されたイベントを追加
       if (props.onSave) {
-        props.onSave(allEvent); // props.onSave がオプショナルな場合は、存在確認をしてから呼ぶ
+        props.onSave(allEvent);
       }
     } catch (error) {
       console.error("保存失敗:", error);
@@ -174,25 +157,15 @@ const Modal = (props: {
 
     try {
       // メインタスクを更新
-      const { error: mainError } = await supabase
-        .from("events")
-        .update({
-          title: taskTitle,
-          start: deadline,
-          color: taskColor,
-          detail: taskDetail,
-        })
-        .eq("id", props.mainData.id);
-
-      if (mainError) throw mainError;
+      await updateMainEvent(props.mainData.id, {
+        title: taskTitle,
+        start: deadline,
+        color: taskColor,
+        detail: taskDetail,
+      });
 
       // 既存の中間目標を削除
-      const { error: deleteError } = await supabase
-        .from("events")
-        .delete()
-        .eq("parent_id", props.mainData.id);
-
-      if (deleteError) throw deleteError;
+      await deleteChildEvents(props.mainData.id);
 
       // 新しい中間目標を挿入
       const mileTask = milestone
@@ -208,13 +181,7 @@ const Modal = (props: {
           parent_id: props.mainData.id,
         }));
 
-      if (mileTask.length > 0) {
-        const { error: mileError } = await supabase
-          .from("events")
-          .insert(mileTask);
-
-        if (mileError) throw mileError;
-      }
+      await insertChildEvents(mileTask);
 
       if (props.onSave) {
         props.onSave([]);
